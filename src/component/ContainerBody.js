@@ -5,7 +5,8 @@ import Container from "@mui/material/Container";
 import BodyTable from "./BodyTable";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import Link from '@mui/material/Link';
+// import Link from '@mui/material/Link';
+import { Route,Routes,Link } from 'react-router';
 
 function ContainerBody() {
   return (
@@ -19,7 +20,7 @@ function ContainerBody() {
           </Typography>
         </Box>
         <Box>
-          <Link href="add">
+          <Link to={"add"} >
             <Button variant="contained">ADD</Button>
           </Link>
         </Box>
