@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -7,8 +7,15 @@ import Button from "@mui/material/Button";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import UpImg from "./UpImg";
 
 function UserAdd() {
+  const Gender = ["Male", "Female"];
+  const [image, setImage] = useState("");
   return (
     <div>
       <React.Fragment>
@@ -26,6 +33,8 @@ function UserAdd() {
           </Box>
         </Box>
         <form>
+         <UpImg/>
+
           <Box sx={{ width: "50%" }}>
             <Grid container rowSpacing={1} columnSpacing={1}>
               <Grid item xs={6}>
@@ -54,23 +63,22 @@ function UserAdd() {
                 <Typography variant="h6" gutterBottom>
                   Gender
                 </Typography>
-                <TextField
-                  id="gender"
-                  label="Gender"
-                  variant="outlined"
+                <Autocomplete
                   fullWidth
+                  disablePortal
+                  options={Gender}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Gender" />
+                  )}
                 />
               </Grid>
               <Grid item xs={6}>
                 <Typography variant="h6" gutterBottom>
                   Birthday
                 </Typography>
-                <TextField
-                  id="birthday"
-                  label="Birthday"
-                  variant="outlined"
-                  fullWidth
-                />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker sx={{ width: "100%" }} />
+                </LocalizationProvider>
               </Grid>
             </Grid>
           </Box>

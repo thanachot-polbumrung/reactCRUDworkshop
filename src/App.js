@@ -4,12 +4,14 @@ import './App.css';
 import Navbar from './component/Navbar';
 import ContainerBody from './component/ContainerBody';
 import UserAdd from './component/UserAdd';
+import { CssBaseline } from '@mui/material';
 
 
 
 function App() {
   return (
     <div >
+      <CssBaseline />
       <Navbar/>
       <Routes>
         <Route path="/" element={<ContainerBody/>}/>
