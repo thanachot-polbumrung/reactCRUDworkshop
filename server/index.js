@@ -47,6 +47,27 @@ app.post("/upload", upload.single("file"), (req, res) => {
   res.send({ imageUrl: `http://localhost:3001/images/${filename}` });
 });
 
+app.post("/create",(req,res)=>{
+    const imagePath = req.body.imagePath
+    const fname = req.body.fname
+    const lname = req.body.lname
+    const gender = req.body.gender
+    const birthday = req.body.birthday
+
+    db.query(
+        "INSERT INTO userproflie (image_path, fname, lname, gender, birthday) VALUE(?,?,?,?,?)",
+        [imagePath, fname, lname, gender, birthday],
+        (err,result)=>{
+            if(err){
+                console.log(err)
+            }else{
+                res.send("Values inserted")
+            }
+        }
+    )
+    
+})
+
 
 app.get("/users",(req,res)=>{
     

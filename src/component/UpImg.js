@@ -3,6 +3,8 @@ import { Box, Button, Typography, Paper, IconButton } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Axios from "axios";
+import axios from "axios";
 
 // Styled component สำหรับซ่อน input file ดั้งเดิม
 const Input = styled("input")`
@@ -17,21 +19,26 @@ const Input = styled("input")`
   width: 1px;
 `;
 
-const UpImg = () => {
+const UpImg = ({onChange}) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
       setSelectedImage(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewUrl(reader.result);
-      };
-      reader.readAsDataURL(file);
+      const formData = new FormData();
+      formData.append("file", file);
+      const response = await Axios.post(
+        "http://localhost:3001/upload",
+        formData
+      
+      );
+      setPreviewUrl(response.data.imageUrl);
+      onChange(response.data.imageUrl)
     }
   };
+  console.log(previewUrl);
 
   const handleRemoveImage = () => {
     setSelectedImage(null);
@@ -58,11 +65,7 @@ const UpImg = () => {
             sx={{ mb: 2 }}
           >
             เลือกรูปภาพ
-            <Input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-            />
+            <Input type="file" accept="image/*" onChange={handleImageChange} />
           </Button>
         ) : (
           <Box
