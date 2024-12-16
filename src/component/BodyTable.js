@@ -14,7 +14,7 @@ import Axios from "axios";
 import { Avatar } from "@mui/material";
 
 
-export default function BodyTable({ val }) {
+export default function BodyTable() {
   const [user, setUser] = useState([]);
   const [loading, setLoading] = useState(false);
   const getUser = async () => {
