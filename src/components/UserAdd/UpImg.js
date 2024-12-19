@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { Box, Button, Typography, Paper, IconButton } from "@mui/material";
+import { Box, Button, Typography, Paper, IconButton, Avatar } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Axios from "axios";
-import axios from "axios";
 
 // Styled component สำหรับซ่อน input file ดั้งเดิม
 const Input = styled("input")`
@@ -18,8 +17,19 @@ const Input = styled("input")`
   white-space: nowrap;
   width: 1px;
 `;
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
 
-const UpImg = ({onChange}) => {
+const UpImg = ({ onChange, ...props }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
 
@@ -32,10 +42,9 @@ const UpImg = ({onChange}) => {
       const response = await Axios.post(
         "http://localhost:3001/upload",
         formData
-      
       );
       setPreviewUrl(response.data.imageUrl);
-      onChange(response.data.imageUrl)
+      onChange(response.data.imageUrl);
     }
   };
   console.log(previewUrl);
@@ -46,18 +55,42 @@ const UpImg = ({onChange}) => {
   };
 
   return (
-    <Box sx={{ maxWidth: 400, mx: "auto", p: 2 }}>
+    <Box sx={{ maxWidth: "100%", mx: "auto", p: 2 }}>
       <Paper
         elevation={3}
         sx={{
-          p: 3,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 2,
+          display: 'flex', 
+          alignItems: 'center', 
+          p: 1, 
+          width: 'fit-content',
+          borderRadius: '50px' 
         }}
       >
-        {!previewUrl ? (
+        <Avatar
+        src={selectedImage || undefined}
+        sx={{ 
+          width: 200, 
+          height: 200, 
+          mr: 2,
+          border: selectedImage ? '2px solid' : '2px dashed',
+          borderColor: selectedImage ? 'primary.main' : 'grey.400'
+        }}
+      >
+        {!selectedImage && 'เลือกรูป'}
+      </Avatar>
+      <IconButton 
+        component="label" 
+        color="primary" 
+        aria-label="upload picture"
+      >
+        <CloudUploadIcon />
+        <VisuallyHiddenInput
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+        />
+      </IconButton>
+        {/* {!previewUrl ? (
           <Button
             component="label"
             variant="contained"
@@ -76,9 +109,11 @@ const UpImg = ({onChange}) => {
               src={previewUrl}
               alt="Preview"
               sx={{
-                maxWidth: "100%",
-                maxHeight: 200,
-                objectFit: "contain",
+                
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                objectPosition: "center",
                 borderRadius: 1,
               }}
             />
@@ -95,11 +130,11 @@ const UpImg = ({onChange}) => {
               <DeleteIcon />
             </IconButton>
           </Box>
-        )}
+        )} */}
 
         {selectedImage && (
           <Typography variant="body2" color="text.secondary">
-            ชื่อไฟล์: {selectedImage.name}
+            {/* ชื่อไฟล์: {selectedImage.name} */}
           </Typography>
         )}
       </Paper>
