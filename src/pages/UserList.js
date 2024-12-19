@@ -1,15 +1,13 @@
 import React from "react";
-import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import BodyTable from "./BodyTable";
+import UsersTable from "../components/UserList/UsersTable";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-// import Link from '@mui/material/Link';
 import { Route,Routes,Link } from 'react-router';
 
 
-function ContainerBody() {
+function UserList() {
   return (
     
     <React.Fragment>
@@ -28,11 +26,11 @@ function ContainerBody() {
       </Box>
       <Container maxWidth="90%">
         <Box sx={{ bgcolor: "#FFFFFF", height: "100vh" }}>
-          <BodyTable />
+          <UsersTable />
         </Box>
       </Container>
     </React.Fragment>
   );
 }
 
-export default ContainerBody;
+export default UserList;
