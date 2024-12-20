@@ -1,106 +1,146 @@
-import React, { useState } from 'react';
-import { 
-  Box, 
-  Avatar, 
-  IconButton, 
-  Paper, 
+import React, { useState } from "react";
+import {
+  Box,
+  Avatar,
+  IconButton,
+  Paper,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   Button,
-  Typography
-} from '@mui/material';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import ZoomInIcon from '@mui/icons-material/ZoomIn';
-import { styled } from '@mui/material/styles';
+  Typography,
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import DialogContentText from '@mui/material/DialogContentText';
+import { styled } from "@mui/material/styles";
+import Axios from "axios";
+import { Link } from "react-router-dom";
 
-const VisuallyHiddenInput = styled('input')({
-  clip: 'rect(0 0 0 0)',
-  clipPath: 'inset(50%)',
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
   height: 1,
-  overflow: 'hidden',
-  position: 'absolute',
+  overflow: "hidden",
+  position: "absolute",
   bottom: 0,
   left: 0,
-  whiteSpace: 'nowrap',
+  whiteSpace: "nowrap",
   width: 1,
 });
 
-const TestIm = ({ onImageUpload, size = 150 }) => {
+const TestIm = ({ onImageUpload, size = 150, onChange }) => {
   const [selectedImage, setSelectedImage] = useState(null);
-  const [openDialog, setOpenDialog] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [open, setOpen] = useState(false);
 
-  const handleImageChange = (event) => {
+  const handleImageChange = async (event) => {
     const file = event.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedImage({
-          file: file,
-          preview: reader.result
-        });
-        if (onImageUpload) {
-          onImageUpload(file, reader.result);
-        }
-      };
-      reader.readAsDataURL(file);
+      setSelectedImage(file);
+      const formData = new FormData();
+      formData.append("file", file);
+      const response = await Axios.post(
+        "http://localhost:3001/upload",
+        formData
+      );
+      setPreviewUrl(response.data.imageUrl);
+      onChange(response.data.imageUrl);
     }
   };
 
-  const handleOpenDialog = () => {
-    setOpenDialog(true);
+  const handleRemoveImage = () => {
+    setSelectedImage(null);
+    setPreviewUrl(null);
+  };
+  const handleClickOpen = () => {
+    setOpen(true);
   };
 
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
+  const handleClose = () => {
+    setOpen(false);
   };
+
 
   return (
     <>
-      <Paper 
+      <Paper
         elevation={3}
-        sx={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          p: 1, 
-          width: 'fit-content',
-          borderRadius: '50px' 
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          p: 1,
+          width: "fit-content",
+          borderRadius: "50px",
         }}
       >
-        <Box sx={{ position: 'relative' }}>
+        <Box sx={{ position: "relative" }}>
           <Avatar
-            src={selectedImage?.preview || undefined}
-            sx={{ 
-              width: size, 
-              height: size, 
+            src={previewUrl}
+            sx={{
+              width: size,
+              height: size,
               mr: 2,
-              border: selectedImage ? '2px solid' : '2px dashed',
-              borderColor: selectedImage ? 'primary.main' : 'grey.400'
+              border: selectedImage ? "2px solid" : "2px dashed",
+              borderColor: selectedImage ? "primary.main" : "grey.400",
             }}
           >
-            {!selectedImage && 'เลือกรูป'}
+            {!selectedImage && "เลือกรูป"}
           </Avatar>
-          {selectedImage && (
-            <IconButton
-              size="small"
-              sx={{
-                position: 'absolute',
-                bottom: 0,
-                right: '20%',
-                backgroundColor: 'rgba(0,0,0,0.5)',
-                '&:hover': { backgroundColor: 'rgba(0,0,0,0.7)' }
-              }}
-              onClick={handleOpenDialog}
-            >
-              <ZoomInIcon fontSize="small" sx={{ color: 'white' }} />
-            </IconButton>
-          )}
         </Box>
+        <Box sx={{ position: "relative", width: "100%", textAlign: "center" }}>
+          <Box
+            alt="Preview"
+            sx={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center",
+              borderRadius: 1,
+            }}
+          />
+          <IconButton
+           onClick={handleClickOpen}
+            sx={{
+              position: "absolute",
+              top: -12,
+              right: -12,
+              bgcolor: "background.paper",
+              "&:hover": { bgcolor: "grey.200" },
+            }}
+          >
+            <DeleteIcon />
+          </IconButton>
+          <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"You want delete to your image"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            คุณต้องการลบรูปเหรออออออ
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          
+          <Button onClick={handleClose}>Disagree</Button>
+          <Button onClick={handleRemoveImage} autoFocus>
+            Agree
+          </Button>
+          
+        </DialogActions>
+      </Dialog>
+        </Box>
+        
 
-        <IconButton 
-          component="label" 
-          color="primary" 
+        <IconButton
+          component="label"
+          color="primary"
           aria-label="upload picture"
         >
           <CloudUploadIcon />
@@ -111,43 +151,6 @@ const TestIm = ({ onImageUpload, size = 150 }) => {
           />
         </IconButton>
       </Paper>
-
-      <Dialog
-        open={openDialog}
-        onClose={handleCloseDialog}
-        maxWidth="md"
-        fullWidth
-      >
-        <DialogTitle>รูปภาพที่เลือก</DialogTitle>
-        <DialogContent>
-          {selectedImage && (
-            <Box sx={{ 
-              display: 'flex', 
-              flexDirection: 'column', 
-              alignItems: 'center' 
-            }}>
-              <img 
-                src={selectedImage.preview} 
-                alt="Selected" 
-                style={{ 
-                  maxWidth: '100%', 
-                  maxHeight: '500px', 
-                  objectFit: 'contain' 
-                }} 
-              />
-              <Typography variant="body2" sx={{ mt: 2 }}>
-                ชื่อไฟล์: {selectedImage.file.name}
-              </Typography>
-              <Typography variant="body2">
-                ขนาด: {(selectedImage.file.size / 1024).toFixed(2)} KB
-              </Typography>
-            </Box>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>ปิด</Button>
-        </DialogActions>
-      </Dialog>
     </>
   );
 };

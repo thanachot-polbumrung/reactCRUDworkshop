@@ -69,7 +69,7 @@ function UserAdd() {
           <Box  display={"flex"} flexDirection={"row"} sx={{ width: "100%" }}>
             <TestIm onChange={(imagePath) => setImagePath(imagePath)} />
             <Box sx={{ width: "60%" }}>
-              <Grid container rowSpacing={1} columnSpacing={1}>
+              <Grid container justifyContent="flex-end" rowSpacing={1} columnSpacing={1}>
                 <Grid item xs={6}>
                   <Typography variant="h6" gutterBottom>
                     First name
@@ -78,6 +78,7 @@ function UserAdd() {
                     id="fname"
                     label="First name"
                     variant="outlined"
+                    required
                     fullWidth
                     onChange={(e) => setFname(e.target.value)}
                   />
@@ -90,6 +91,7 @@ function UserAdd() {
                     id="lname"
                     label="Last name"
                     variant="outlined"
+                    required
                     fullWidth
                     onChange={(e) => setLname(e.target.value)}
                   />
