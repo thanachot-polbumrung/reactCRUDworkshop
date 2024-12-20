@@ -66,7 +66,7 @@ const UpImg = ({ onChange, ...props }) => {
           borderRadius: '50px' 
         }}
       >
-        <Avatar
+        {/* <Avatar
         src={selectedImage || undefined}
         sx={{ 
           width: 200, 
@@ -89,8 +89,8 @@ const UpImg = ({ onChange, ...props }) => {
           accept="image/*"
           onChange={handleImageChange}
         />
-      </IconButton>
-        {/* {!previewUrl ? (
+      </IconButton> */}
+        {!previewUrl ? (
           <Button
             component="label"
             variant="contained"
@@ -130,7 +130,7 @@ const UpImg = ({ onChange, ...props }) => {
               <DeleteIcon />
             </IconButton>
           </Box>
-        )} */}
+        )}
 
         {selectedImage && (
           <Typography variant="body2" color="text.secondary">

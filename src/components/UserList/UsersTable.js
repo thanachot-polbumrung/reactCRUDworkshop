@@ -16,8 +16,19 @@ import dayjs from "dayjs";
 
 export default function UsersTable() {
   const [user, setUser] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+
+  const [itemsPerPage,setItemPerPage] = useState(10)
+
+  
+  const startIndex = (page - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentUsers = user.slice(startIndex, endIndex);
+  const pageCount =Math.ceil(user.length / itemsPerPage)
+  console.log(user.length)
+  
   const getUser = async () => {
+
     const response = await Axios.get("http://localhost:3001/users");
     setUser(response.data);
   };
@@ -49,7 +60,7 @@ export default function UsersTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {user.map((row) => {
+          {currentUsers.map((row) => {
             const specificDate = dayjs(row.birthday)
             const dateSet =  specificDate.format('D MMM YYYY')
             return (
@@ -104,7 +115,7 @@ export default function UsersTable() {
           })}
         </TableBody>
       </Table>
-      <TapPage />
+      <TapPage onChange={(newPage)=>setPage(newPage)} pageCount={pageCount} itemsPerPage={itemsPerPage} onChangePage={(value)=>setItemPerPage(value)} />
     </TableContainer>
   );
 }
