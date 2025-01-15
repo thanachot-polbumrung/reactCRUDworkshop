@@ -13,12 +13,15 @@ import TapPage from "./TapPage";
 import Axios from "axios";
 import { Avatar } from "@mui/material";
 import dayjs from "dayjs";
+import { Link } from "react-router-dom";
 
 export default function UsersTable() {
   const [user, setUser] = useState([]);
   const [page, setPage] = useState(1);
 
   const [itemsPerPage,setItemPerPage] = useState(10)
+
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   
   const startIndex = (page - 1) * itemsPerPage;
@@ -29,18 +32,20 @@ export default function UsersTable() {
   
   const getUser = async () => {
 
-    const response = await Axios.get("http://localhost:3001/users");
+    const response = await Axios.get(`${apiUrl}/users`);
     setUser(response.data);
   };
 
   const deleteUser = async (id) => {
-    const response = await Axios.delete(`http://localhost:3001/delete/${id}`);
+    const response = await Axios.delete(`${apiUrl}/delete/${id}`);
     setUser(
       user.filter((val) => {
         return val.id != id;
       })
     );
   };
+
+ 
 
   useEffect(() => {
     getUser();
@@ -63,10 +68,12 @@ export default function UsersTable() {
           {currentUsers.map((row) => {
             const specificDate = dayjs(row.birthday)
             const dateSet =  specificDate.format('D MMM YYYY')
+            
             return (
 
               <TableRow
                 key={row.name}
+                
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell align="center">
@@ -92,7 +99,9 @@ export default function UsersTable() {
                       aria-label="Vertical button group"
                       variant="contained"
                     >
-                      <Button color="warning">Edit</Button>
+                      <Link to={`edit/${row.id}`}>
+                      <Button  color="warning">Edit</Button>
+                      </Link>
                     </ButtonGroup>
                     <ButtonGroup
                       orientation="vertical"
