@@ -1,18 +1,21 @@
+require('dotenv').config();
 const express = require("express")
 const app = express()
 const mysql = require("mysql")
 const cors = require("cors")
-const port = 3001;
+const port = process.env.PORT ;
 const multer = require("multer");
 
 app.use(cors())
 app.use(express.json())
 
+
+
 const db = mysql.createConnection({
-    user:"root",
-    host:"localhost",
-    password:"root999",
-    database:"users"
+    user:process.env.DB_USER,
+    host:process.env.DB_HOST,
+    password:process.env.DB_PASSWORD,
+    database:process.env.DB_NAME
 })
 
 app.use(cors());
@@ -44,7 +47,7 @@ const upload = multer({ storage: storage,fileFilter,limits:{fileSize:1024*1024*2
 app.post("/upload", upload.single("file"), (req, res) => {
   console.log(req.file);
   const { filename } = req.file;
-  res.send({ imageUrl: `http://localhost:3001/images/${filename}` });
+  res.send({ imageUrl: `http://localhost:${port}/images/${filename}` });
 });
 
 app.post("/create",(req,res)=>{
@@ -83,6 +86,23 @@ app.get("/users",(req,res)=>{
 app.delete("/delete/:id",(req,res)=>{
     const id=req.params.id
     db.query("DELETE FROM userproflie WHERE id=?",id,(err,result)=>{
+        if(err){
+            console.log(err)
+        }else{
+            res.send(result)
+        }
+    })
+})
+
+app.put("/edit",(req,res)=>{
+    const id = req.body.id
+    const fname=req.body.fname
+    const lname=req.body.lname
+    const gender=req.body.gender
+    const birthday=req.body.birthday
+    const image_path=req.body.imagePath
+    console.log(req.body)
+    db.query("UPDATE userproflie SET image_path=?, fname=?, lname=?, gender=?, birthday=? WHERE id=?",[image_path,fname,lname,gender,birthday,id],(err,result)=>{
         if(err){
             console.log(err)
         }else{
