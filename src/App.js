@@ -7,7 +7,6 @@ import UserList from "./pages/UserList";
 import Navbar from "./components/common/Navbar";
 import UserEdit from "./pages/UserEdit";
 import ToDoList from "./pages/ToDoList";
-import Teststate from "./pages/Teststate";
 import UserProfileEditor from "./pages/UserProfileEditor ";
 
 function App() {
@@ -20,7 +19,6 @@ function App() {
         <Route path="add" element={<UserAdd />} />
         <Route path="edit/:id" element={<UserEdit />} />
         <Route path="ToDoList" element={<ToDoList />} />
-        <Route path="state" element={<Teststate />} />
         <Route path="Profile" element={<UserProfileEditor />} />
       </Routes>
     </div>
