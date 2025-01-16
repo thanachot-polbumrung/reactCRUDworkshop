@@ -58,7 +58,7 @@ function UserAdd() {
           </Box>
           <Box>
             <Link href="add">
-              <Button variant="contained">ADD</Button>
+              <Button disabled>ADD</Button>
             </Link>
           </Box>
         </Box>
@@ -155,7 +155,7 @@ function UserAdd() {
               aria-label="Vertical button group"
               variant="contained"
             >
-              <Link href="">
+              <Link href="/">
                 <Button variant="contained" color="success" onClick={addUser}>
                   Save
                 </Button>

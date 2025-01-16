@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Avatar,
@@ -13,10 +13,10 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import DialogContentText from '@mui/material/DialogContentText';
+import DialogContentText from "@mui/material/DialogContentText";
 import { styled } from "@mui/material/styles";
 import Axios from "axios";
-import { Link } from "react-router-dom";
+
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -30,11 +30,11 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-const TestIm = ({ onImageUpload, size = 150, onChange }) => {
+const TestIm = ({ size = 150, onChange,imagePath }) => {
   const [selectedImage, setSelectedImage] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(imagePath);
   const [open, setOpen] = useState(false);
-
+  console.log(imagePath)
   const handleImageChange = async (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -62,9 +62,14 @@ const TestIm = ({ onImageUpload, size = 150, onChange }) => {
     setOpen(false);
   };
 
+  useEffect(()=>{
+    setPreviewUrl(imagePath)
+  },[imagePath])
+
+  
 
   return (
-    <>
+    
       <Paper
         elevation={3}
         sx={{
@@ -100,8 +105,9 @@ const TestIm = ({ onImageUpload, size = 150, onChange }) => {
               borderRadius: 1,
             }}
           />
+          <Box sx={{display:"flex",flexDirection:"row"} }>
           <IconButton
-           onClick={handleClickOpen}
+            onClick={handleClickOpen}
             sx={{
               position: "absolute",
               top: -12,
@@ -112,46 +118,47 @@ const TestIm = ({ onImageUpload, size = 150, onChange }) => {
           >
             <DeleteIcon />
           </IconButton>
+         
+          </Box>
           <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {"You want delete to your image"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            คุณต้องการลบรูปเหรออออออ
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          
-          <Button onClick={handleClose}>Disagree</Button>
-          <Button onClick={handleRemoveImage} autoFocus>
-            Agree
-          </Button>
-          
-        </DialogActions>
-      </Dialog>
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              {"You want delete to your image"}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                คุณต้องการลบรูป?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose}>Disagree</Button>
+              <Button onClick={handleRemoveImage} autoFocus>
+                Agree
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Box>
-        
 
+        <Box sx={{marginTop:"15px",marginLeft:"5px"}}>
         <IconButton
-          component="label"
-          color="primary"
-          aria-label="upload picture"
-        >
-          <CloudUploadIcon />
-          <VisuallyHiddenInput
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-          />
-        </IconButton>
+            component="label"
+            color="primary"
+            aria-label="upload picture"
+          >
+            <CloudUploadIcon />
+            <VisuallyHiddenInput
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+          </IconButton>
+        </Box>
       </Paper>
-    </>
+    
   );
 };
 

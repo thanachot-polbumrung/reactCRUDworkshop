@@ -14,11 +14,16 @@ import Axios from "axios";
 import { Avatar } from "@mui/material";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+
+import DialogTitle from '@mui/material/DialogTitle';
 
 export default function UsersTable() {
   const [user, setUser] = useState([]);
   const [page, setPage] = useState(1);
-
+  const [open, setOpen] = React.useState(false);
   const [itemsPerPage,setItemPerPage] = useState(10)
 
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -50,6 +55,14 @@ export default function UsersTable() {
   useEffect(() => {
     getUser();
   }, []);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
     <TableContainer component={Paper}>
@@ -110,13 +123,32 @@ export default function UsersTable() {
                     >
                       <Button
                         color="error"
-                        onClick={() => {
-                          deleteUser(row.id);
-                        }}
+                        onClick={handleClickOpen}
+                        // onClick={() => {
+                        //   deleteUser(row.id);
+                        // }}
                       >
                         Delete
                       </Button>
                     </ButtonGroup>
+                    <Dialog
+                open={open}
+                onClose={handleClose}
+                
+              >
+                <DialogTitle>{"คุณต้องการยกเลิกใช่หรือไม่?"}</DialogTitle>
+                <DialogContent>
+                  
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleClose}>Disagree</Button>
+                  <Link href="/">
+                  <Button onClick={() => {
+                          deleteUser(row.id);
+                        }}>Agree</Button>
+                  </Link>
+                </DialogActions>
+              </Dialog>
                   </Box>
                 </TableCell>
               </TableRow>

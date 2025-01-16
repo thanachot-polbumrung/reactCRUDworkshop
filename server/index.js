@@ -83,6 +83,17 @@ app.get("/users",(req,res)=>{
     })
 })
 
+app.get("/user/:id",(req,res)=>{
+    const id=req.params.id
+    db.query("SELECT * FROM userproflie WHERE id=?",id,(err,result)=>{
+        if(err){
+            console.log(err)
+        }else{
+            res.send(result[0])
+        }
+    })
+})
+
 app.delete("/delete/:id",(req,res)=>{
     const id=req.params.id
     db.query("DELETE FROM userproflie WHERE id=?",id,(err,result)=>{
@@ -94,7 +105,7 @@ app.delete("/delete/:id",(req,res)=>{
     })
 })
 
-app.put("/edit",(req,res)=>{
+app.put("/edit/:id",(req,res)=>{
     const id = req.body.id
     const fname=req.body.fname
     const lname=req.body.lname
@@ -106,7 +117,7 @@ app.put("/edit",(req,res)=>{
         if(err){
             console.log(err)
         }else{
-            res.send(result)
+            res.send("result")
         }
     })
 })

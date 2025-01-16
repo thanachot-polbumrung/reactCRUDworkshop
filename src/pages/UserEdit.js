@@ -17,31 +17,44 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import TestIm from "../components/UserAdd/TestIm";
-import { useNavigate, useParams } from "react-router-dom";
+import {  useNavigate, useParams } from "react-router-dom";
+import dayjs, { Dayjs } from "dayjs";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
-function UserEdit({}) {
+
+
+function UserEdit() {
   const { id } = useParams();
 
   const navigate = useNavigate();
 
-  const [user,setUser] = useState([])
+  const [open, setOpen] = useState(false);
+
 
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
   const [gender, setGender] = useState("");
-  const [birthday, setBirthday] = useState("");
+  const [birthday, setBirthday] = useState(null);
   const [imagePath, setImagePath] = useState("");
 
   const apiUrl = process.env.REACT_APP_API_URL;
 
   const getUser = async () => {
-
-    const response = await Axios.get(`${apiUrl}/users`);
-    setUser(response.data);
+    const response = await Axios.get(`${apiUrl}/user/${id}`);
+    setFname(response.data.fname);
+    setLname(response.data.lname);
+    setGender(response.data.gender);
+    setBirthday(dayjs(response.data.birthday));
+    setImagePath(response.data.image_path);
+    console.log(new Date(response.data.birthday));
   };
 
   const editUser = async (id) => {
-     await Axios.put("http://localhost:3001/edit", {
+    await Axios.put("http://localhost:3001/edit", {
       imagePath: imagePath,
       fname: fname,
       lname: lname,
@@ -49,13 +62,21 @@ function UserEdit({}) {
       birthday: birthday,
       id: id,
     });
-   
-    navigate("/")
+
+    navigate("/");
   };
 
   useEffect(() => {
     getUser();
   }, []);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
     <div>
@@ -69,7 +90,7 @@ function UserEdit({}) {
           </Box>
           <Box>
             <Link href="add">
-              <Button variant="contained">ADD</Button>
+              <Button disabled>ADD</Button>
             </Link>
           </Box>
         </Box>
@@ -77,8 +98,11 @@ function UserEdit({}) {
         <Container maxWidth="90%">
           <form>
             <Box display={"flex"} flexDirection={"row"} sx={{ width: "100%" }}>
-              <TestIm onChange={(imagePath) => setImagePath(imagePath)} />
-              <Box sx={{ width: "60%" }}>
+              <TestIm
+                imagePath={imagePath}
+                onChange={(imagePath) => setImagePath(imagePath)}
+              />
+              <Box sx={{ width: "60%", margin: "20px" }}>
                 <Grid
                   container
                   justifyContent="flex-end"
@@ -91,7 +115,7 @@ function UserEdit({}) {
                     </Typography>
                     <TextField
                       id="fname"
-                      label="First name"
+                      label={fname}
                       variant="outlined"
                       value={fname}
                       required
@@ -143,6 +167,7 @@ function UserEdit({}) {
                       <DatePicker
                         onChange={(newValue) => setBirthday(newValue)}
                         sx={{ width: "100%" }}
+                        value={birthday}
                       />
                     </LocalizationProvider>
                   </Grid>
@@ -164,24 +189,38 @@ function UserEdit({}) {
                 aria-label="Vertical button group"
                 variant="contained"
               >
-                <Link href="/">
-                  <Button color="error">cancel</Button>
-                </Link>
+                {/* <Link href="/"> */}
+                  <Button onClick={handleClickOpen} color="error">cancel</Button>
+                {/* </Link> */}
               </ButtonGroup>
+              <Dialog
+                open={open}
+                onClose={handleClose}
+                
+              >
+                <DialogTitle>{"คุณต้องการยกเลิกใช่หรือไม่?"}</DialogTitle>
+                <DialogContent>
+                  
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleClose}>Disagree</Button>
+                  <Link href="/">
+                  <Button >Agree</Button>
+                  </Link>
+                </DialogActions>
+              </Dialog>
               <ButtonGroup
                 orientation="vertical"
                 aria-label="Vertical button group"
                 variant="contained"
               >
-                
-                  <Button
-                    variant="contained"
-                    color="success"
-                    onClick={() => editUser(id)}
-                  >
-                    Save
-                  </Button>
-                
+                <Button
+                  variant="contained"
+                  color="success"
+                  onClick={() => editUser(id)}
+                >
+                  Save
+                </Button>
               </ButtonGroup>
             </Box>
           </form>
