@@ -17,7 +17,7 @@ function TapPage({onChange,pageCount,itemsPerPage,onChangePage}) {
       justifyContent: 'flex-end' 
     }}>
 
-    <TextField value={itemsPerPage} onChange={(e)=>onChangePage(e.target.value)}  />
+    {/* <TextField value={itemsPerPage} onChange={(e)=>onChangePage(e.target.value)}  /> */}
     <Pagination
     siblingCount={2} 
     boundaryCount={2} 
