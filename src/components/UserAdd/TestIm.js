@@ -16,6 +16,7 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DialogContentText from "@mui/material/DialogContentText";
 import { styled } from "@mui/material/styles";
 import Axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 
 const VisuallyHiddenInput = styled("input")({
@@ -31,6 +32,7 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 const TestIm = ({ size = 150, onChange,imagePath }) => {
+  const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(imagePath);
   const [open, setOpen] = useState(false);
@@ -48,11 +50,13 @@ const TestIm = ({ size = 150, onChange,imagePath }) => {
       setPreviewUrl(response.data.imageUrl);
       onChange(response.data.imageUrl);
     }
+    
   };
 
   const handleRemoveImage = () => {
     setSelectedImage(null);
     setPreviewUrl(null);
+ 
   };
   const handleClickOpen = () => {
     setOpen(true);
