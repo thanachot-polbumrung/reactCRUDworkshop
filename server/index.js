@@ -105,7 +105,7 @@ app.delete("/delete/:id",(req,res)=>{
     })
 })
 
-app.put("/edit/:id",(req,res)=>{
+app.put("/edit",(req,res)=>{
     const id = req.body.id
     const fname=req.body.fname
     const lname=req.body.lname

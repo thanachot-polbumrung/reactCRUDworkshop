@@ -13,7 +13,7 @@ import TapPage from "./TapPage";
 import Axios from "axios";
 import { Avatar } from "@mui/material";
 import dayjs from "dayjs";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -25,6 +25,7 @@ export default function UsersTable() {
   const [page, setPage] = useState(1);
   const [open, setOpen] = React.useState(false);
   const [itemsPerPage,setItemPerPage] = useState(10)
+  const navigate = useNavigate();
 
   const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -48,6 +49,7 @@ export default function UsersTable() {
         return val.id != id;
       })
     );
+
   };
 
  
@@ -143,9 +145,9 @@ export default function UsersTable() {
                 <DialogActions>
                   <Button onClick={handleClose}>Disagree</Button>
                   <Link href="/">
-                  <Button onClick={() => {
-                          deleteUser(row.id);
-                        }}>Agree</Button>
+                  <Button  onClick={() => {
+                          deleteUser(row.id,navigate(0));
+                        }} >Agree</Button>
                   </Link>
                 </DialogActions>
               </Dialog>
