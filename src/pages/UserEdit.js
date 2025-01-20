@@ -17,15 +17,13 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import TestIm from "../components/UserAdd/TestIm";
-import {  useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import dayjs, { Dayjs } from "dayjs";
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-
-
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 function UserEdit() {
   const { id } = useParams();
@@ -34,32 +32,37 @@ function UserEdit() {
 
   const [open, setOpen] = useState(false);
 
-
-  const [fname, setFname] = useState("");
-  const [lname, setLname] = useState("");
-  const [gender, setGender] = useState("");
-  const [birthday, setBirthday] = useState(null);
-  const [imagePath, setImagePath] = useState("");
+ 
+  const [user, setUser] = useState({
+    fname: "",
+    lname: "",
+    gender: "",
+    birthday: "",
+    imagePath: "",
+  });
 
   const apiUrl = process.env.REACT_APP_API_URL;
 
   const getUser = async () => {
     const response = await Axios.get(`${apiUrl}/user/${id}`);
-    setFname(response.data.fname);
-    setLname(response.data.lname);
-    setGender(response.data.gender);
-    setBirthday(dayjs(response.data.birthday));
-    setImagePath(response.data.image_path);
-    console.log(new Date(response.data.birthday));
+    setUser({
+      fname: response.data.fname,
+      lname: response.data.lname,
+      gender: response.data.gender,
+      birthday: response.data.birthday,
+      imagePath: response.data.image_path
+    });
+
+
   };
 
   const editUser = async (id) => {
     await Axios.put("http://localhost:3001/edit", {
-      imagePath: imagePath,
-      fname: fname,
-      lname: lname,
-      gender: gender,
-      birthday: birthday,
+      imagePath: user.imagePath,
+      fname: user.fname,
+      lname: user.lname,
+      gender: user.gender,
+      birthday: user.birthday,
       id: id,
     });
 
@@ -99,8 +102,8 @@ function UserEdit() {
           <form>
             <Box display={"flex"} flexDirection={"row"} sx={{ width: "100%" }}>
               <TestIm
-                imagePath={imagePath}
-                onChange={(imagePath) => setImagePath(imagePath)}
+                imagePath={user.imagePath}
+                onChange={(imagePath) => setUser(prev=>({...prev,imagePath:imagePath}))}
               />
               <Box sx={{ width: "60%", margin: "20px" }}>
                 <Grid
@@ -115,12 +118,12 @@ function UserEdit() {
                     </Typography>
                     <TextField
                       id="fname"
-                      label={fname}
+                      label="fname"
                       variant="outlined"
-                      value={fname}
+                      value={user.fname}
                       required
                       fullWidth
-                      onChange={(e) => setFname(e.target.value)}
+                      onChange={(e) => setUser(prev=>({...prev,fname:e.target.value}))}
                     />
                   </Grid>
                   <Grid item xs={6}>
@@ -131,10 +134,10 @@ function UserEdit() {
                       id="lname"
                       label="Last name"
                       variant="outlined"
-                      value={lname}
+                      value={user.lname}
                       required
                       fullWidth
-                      onChange={(e) => setLname(e.target.value)}
+                      onChange={(e) => setUser(prev=>({...prev,lname:e.target.value}))}
                     />
                   </Grid>
                   <Grid item xs={6}>
@@ -149,9 +152,9 @@ function UserEdit() {
                         <Select
                           labelId="demo-simple-select-label"
                           id="demo-simple-select"
-                          value={gender}
+                          value={user.gender}
                           label="gender"
-                          onChange={(e) => setGender(e.target.value)}
+                          onChange={(e) => setUser(prev=>({...prev,gender:e.target.value}))}
                         >
                           <MenuItem value={"Male"}>Male</MenuItem>
                           <MenuItem value={"Female"}>Female</MenuItem>
@@ -165,9 +168,9 @@ function UserEdit() {
                     </Typography>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DatePicker
-                        onChange={(newValue) => setBirthday(newValue)}
+                        onChange={(newValue) => setUser(prev=>({...prev,birthday:newValue}))}
                         sx={{ width: "100%" }}
-                        value={birthday}
+                        value={user.birthday}
                       />
                     </LocalizationProvider>
                   </Grid>
@@ -190,22 +193,18 @@ function UserEdit() {
                 variant="contained"
               >
                 {/* <Link href="/"> */}
-                  <Button onClick={handleClickOpen} color="error">cancel</Button>
+                <Button onClick={handleClickOpen} color="error">
+                  cancel
+                </Button>
                 {/* </Link> */}
               </ButtonGroup>
-              <Dialog
-                open={open}
-                onClose={handleClose}
-                
-              >
+              <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>{"คุณต้องการยกเลิกใช่หรือไม่?"}</DialogTitle>
-                <DialogContent>
-                  
-                </DialogContent>
+                <DialogContent></DialogContent>
                 <DialogActions>
                   <Button onClick={handleClose}>Disagree</Button>
                   <Link href="/">
-                  <Button >Agree</Button>
+                    <Button>Agree</Button>
                   </Link>
                 </DialogActions>
               </Dialog>
