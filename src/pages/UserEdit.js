@@ -32,7 +32,6 @@ function UserEdit() {
 
   const [open, setOpen] = useState(false);
 
- 
   const [user, setUser] = useState({
     fname: "",
     lname: "",
@@ -41,32 +40,33 @@ function UserEdit() {
     imagePath: "",
   });
 
-  const apiUrl = process.env.REACT_APP_API_URL;
-
   const getUser = async () => {
-    const response = await Axios.get(`${apiUrl}/user/${id}`);
-    setUser({
-      fname: response.data.fname,
-      lname: response.data.lname,
-      gender: response.data.gender,
-      birthday: response.data.birthday,
-      imagePath: response.data.image_path
-    });
-
-
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/user/${id}`
+      );
+      setUser({
+        fname: response.data.fname,
+        lname: response.data.lname,
+        gender: response.data.gender,
+        birthday: response.data.birthday,
+        imagePath: response.data.image_path,
+      });
+    } catch (_) {}
   };
 
   const editUser = async (id) => {
-    await Axios.put("http://localhost:3001/edit", {
-      imagePath: user.imagePath,
-      fname: user.fname,
-      lname: user.lname,
-      gender: user.gender,
-      birthday: user.birthday,
-      id: id,
-    });
-
-    navigate("/");
+    try {
+      await Axios.put(`${process.env.REACT_APP_API_URL}/edit`, {
+        imagePath: user.imagePath,
+        fname: user.fname,
+        lname: user.lname,
+        gender: user.gender,
+        birthday: user.birthday,
+        id: id,
+      });
+      navigate("/");
+    } catch (_) {}
   };
 
   useEffect(() => {
@@ -82,151 +82,147 @@ function UserEdit() {
   };
 
   return (
-    <div>
-      <React.Fragment>
-        <CssBaseline />
-        <Box display={"flex"} margin={"10px"}>
-          <Box sx={{ flexGrow: 1 }}>
-            <Typography variant="h6" gutterBottom>
-              Edit
-            </Typography>
-          </Box>
-          <Box>
-            <Link href="add">
-              <Button disabled>ADD</Button>
-            </Link>
+    <React.Fragment>
+      <Box display={"flex"} margin={"10px"}>
+        <Box sx={{ flexGrow: 1 }}>
+          <Typography variant="h6" gutterBottom>
+            Edit
+          </Typography>
+        </Box>
+        <Box>
+          <Link href="add">
+            <Button disabled>ADD</Button>
+          </Link>
+        </Box>
+      </Box>
+
+      <Container maxWidth="90%">
+        <Box display={"flex"} flexDirection={"row"} sx={{ width: "100%" }}>
+          <TestIm
+            imagePath={user.imagePath}
+            onChange={(imagePath) => setUser(prev=>({...prev,imagePath:imagePath}))}
+          />
+          <Box sx={{ width: "60%", margin: "20px" }}>
+            <Grid
+              container
+              justifyContent="flex-end"
+              rowSpacing={1}
+              columnSpacing={1}
+            >
+              <Grid item xs={6}>
+                <Typography variant="h6" gutterBottom>
+                  First name
+                </Typography>
+                <TextField
+                  id="fname"
+                  label="fname"
+                  variant="outlined"
+                  value={user.fname}
+                  required
+                  fullWidth
+                  onChange={(e) => setUser(prev=>({...prev,fname:e.target.value}))}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <Typography variant="h6" gutterBottom>
+                  Last name
+                </Typography>
+                <TextField
+                  id="lname"
+                  label="Last name"
+                  variant="outlined"
+                  value={user.lname}
+                  required
+                  fullWidth
+                  onChange={(e) => setUser(prev=>({...prev,lname:e.target.value}))}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <Typography variant="h6" gutterBottom>
+                  Gender
+                </Typography>
+                <Box sx={{ minWidth: 120 }}>
+                  <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">
+                      Gender
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={user.gender}
+                      label="gender"
+                      onChange={(e) => setUser(prev=>({...prev,gender:e.target.value}))}
+                    >
+                      <MenuItem value={"Male"}>Male</MenuItem>
+                      <MenuItem value={"Female"}>Female</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography variant="h6" gutterBottom>
+                  Birthday
+                </Typography>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    onChange={(newValue) => setUser(prev=>({...prev,birthday:newValue}))}
+                    sx={{ width: "100%" }}
+                    value={user.birthday}
+                  />
+                </LocalizationProvider>
+              </Grid>
+            </Grid>
           </Box>
         </Box>
-
-        <Container maxWidth="90%">
-          <form>
-            <Box display={"flex"} flexDirection={"row"} sx={{ width: "100%" }}>
-              <TestIm
-                imagePath={user.imagePath}
-                onChange={(imagePath) => setUser(prev=>({...prev,imagePath:imagePath}))}
-              />
-              <Box sx={{ width: "60%", margin: "20px" }}>
-                <Grid
-                  container
-                  justifyContent="flex-end"
-                  rowSpacing={1}
-                  columnSpacing={1}
-                >
-                  <Grid item xs={6}>
-                    <Typography variant="h6" gutterBottom>
-                      First name
-                    </Typography>
-                    <TextField
-                      id="fname"
-                      label="fname"
-                      variant="outlined"
-                      value={user.fname}
-                      required
-                      fullWidth
-                      onChange={(e) => setUser(prev=>({...prev,fname:e.target.value}))}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant="h6" gutterBottom>
-                      Last name
-                    </Typography>
-                    <TextField
-                      id="lname"
-                      label="Last name"
-                      variant="outlined"
-                      value={user.lname}
-                      required
-                      fullWidth
-                      onChange={(e) => setUser(prev=>({...prev,lname:e.target.value}))}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant="h6" gutterBottom>
-                      Gender
-                    </Typography>
-                    <Box sx={{ minWidth: 120 }}>
-                      <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label">
-                          Gender
-                        </InputLabel>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          value={user.gender}
-                          label="gender"
-                          onChange={(e) => setUser(prev=>({...prev,gender:e.target.value}))}
-                        >
-                          <MenuItem value={"Male"}>Male</MenuItem>
-                          <MenuItem value={"Female"}>Female</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </Box>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant="h6" gutterBottom>
-                      Birthday
-                    </Typography>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DatePicker
-                        onChange={(newValue) => setUser(prev=>({...prev,birthday:newValue}))}
-                        sx={{ width: "100%" }}
-                        value={user.birthday}
-                      />
-                    </LocalizationProvider>
-                  </Grid>
-                </Grid>
-              </Box>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "flex-end",
-                marginTop: "20px",
-                "& > *": {
-                  m: 1,
-                },
-              }}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            marginTop: "20px",
+            "& > *": {
+              m: 1,
+            },
+          }}
+        >
+          <ButtonGroup
+            orientation="vertical"
+            aria-label="Vertical button group"
+            variant="contained"
+          >
+            {/* <Link href="/"> */}
+            <Button onClick={handleClickOpen} color="error">
+              cancel
+            </Button>
+            {/* </Link> */}
+          </ButtonGroup>
+          <Dialog open={open} onClose={handleClose}>
+            <DialogTitle>{"คุณต้องการยกเลิกใช่หรือไม่?"}</DialogTitle>
+            <DialogContent></DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose}>Disagree</Button>
+              <Link href="/">
+                <Button>Agree</Button>
+              </Link>
+            </DialogActions>
+          </Dialog>
+          <ButtonGroup
+            orientation="vertical"
+            aria-label="Vertical button group"
+            variant="contained"
+          >
+            <Button
+              variant="contained"
+              color="success"
+              onClick={() => editUser(id)}
             >
-              <ButtonGroup
-                orientation="vertical"
-                aria-label="Vertical button group"
-                variant="contained"
-              >
-                {/* <Link href="/"> */}
-                <Button onClick={handleClickOpen} color="error">
-                  cancel
-                </Button>
-                {/* </Link> */}
-              </ButtonGroup>
-              <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>{"คุณต้องการยกเลิกใช่หรือไม่?"}</DialogTitle>
-                <DialogContent></DialogContent>
-                <DialogActions>
-                  <Button onClick={handleClose}>Disagree</Button>
-                  <Link href="/">
-                    <Button>Agree</Button>
-                  </Link>
-                </DialogActions>
-              </Dialog>
-              <ButtonGroup
-                orientation="vertical"
-                aria-label="Vertical button group"
-                variant="contained"
-              >
-                <Button
-                  variant="contained"
-                  color="success"
-                  onClick={() => editUser(id)}
-                >
-                  Save
-                </Button>
-              </ButtonGroup>
-            </Box>
-          </form>
-          <Box sx={{ bgcolor: "#FFF", height: "100vh" }}></Box>
-        </Container>
-      </React.Fragment>
-    </div>
+              Save
+            </Button>
+          </ButtonGroup>
+        </Box>
+
+        <Box sx={{ bgcolor: "#FFF", height: "100vh" }}></Box>
+      </Container>
+    </React.Fragment>
   );
 }
 

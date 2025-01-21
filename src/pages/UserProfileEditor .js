@@ -3,20 +3,16 @@ import ProfileForm from "../components/NestedState/ProfileForm";
 import ContactForm from "../components/NestedState/ContactForm";
 import AddressForm from "../components/NestedState/AddressForm";
 import UserProvider from "../context/UserContext";
-
-
+import ButtonForm from "../components/NestedState/ButtonForm";
 
 function UserProfileEditor() {
   return (
-    <div>
-      <UserProvider>
-        <ProfileForm />
-        <ContactForm />
-        <AddressForm />
-        <button type="submit">Update Profile</button>
-        <button>reset</button>
-      </UserProvider>
-    </div>
+    <UserProvider>
+      <ProfileForm />
+      <ContactForm />
+      <AddressForm />
+      <ButtonForm />
+    </UserProvider>
   );
 }
 
