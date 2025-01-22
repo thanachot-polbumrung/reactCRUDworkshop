@@ -36,7 +36,7 @@ function UserEdit() {
     fname: "",
     lname: "",
     gender: "",
-    birthday: "",
+    birthday: null,
     imagePath: "",
   });
 
@@ -49,7 +49,7 @@ function UserEdit() {
         fname: response.data.fname,
         lname: response.data.lname,
         gender: response.data.gender,
-        birthday: response.data.birthday,
+        birthday: dayjs(response.data.birthday),
         imagePath: response.data.image_path,
       });
     } catch (_) {}
@@ -96,11 +96,14 @@ function UserEdit() {
         </Box>
       </Box>
 
+
       <Container maxWidth="90%">
         <Box display={"flex"} flexDirection={"row"} sx={{ width: "100%" }}>
           <TestIm
             imagePath={user.imagePath}
-            onChange={(imagePath) => setUser(prev=>({...prev,imagePath:imagePath}))}
+            onChange={(imagePath) =>
+              setUser((prev) => ({ ...prev, imagePath: imagePath }))
+            }
           />
           <Box sx={{ width: "60%", margin: "20px" }}>
             <Grid
@@ -120,7 +123,9 @@ function UserEdit() {
                   value={user.fname}
                   required
                   fullWidth
-                  onChange={(e) => setUser(prev=>({...prev,fname:e.target.value}))}
+                  onChange={(e) =>
+                    setUser((prev) => ({ ...prev, fname: e.target.value }))
+                  }
                 />
               </Grid>
               <Grid item xs={6}>
@@ -134,7 +139,9 @@ function UserEdit() {
                   value={user.lname}
                   required
                   fullWidth
-                  onChange={(e) => setUser(prev=>({...prev,lname:e.target.value}))}
+                  onChange={(e) =>
+                    setUser((prev) => ({ ...prev, lname: e.target.value }))
+                  }
                 />
               </Grid>
               <Grid item xs={6}>
@@ -151,7 +158,9 @@ function UserEdit() {
                       id="demo-simple-select"
                       value={user.gender}
                       label="gender"
-                      onChange={(e) => setUser(prev=>({...prev,gender:e.target.value}))}
+                      onChange={(e) =>
+                        setUser((prev) => ({ ...prev, gender: e.target.value }))
+                      }
                     >
                       <MenuItem value={"Male"}>Male</MenuItem>
                       <MenuItem value={"Female"}>Female</MenuItem>
@@ -165,7 +174,9 @@ function UserEdit() {
                 </Typography>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
-                    onChange={(newValue) => setUser(prev=>({...prev,birthday:newValue}))}
+                    onChange={(newValue) =>
+                      setUser((prev) => ({ ...prev, birthday: newValue }))
+                    }
                     sx={{ width: "100%" }}
                     value={user.birthday}
                   />
