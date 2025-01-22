@@ -1,14 +1,11 @@
-import React, { use, useContext, useState } from "react";
-import { UserContext, useUserContext } from "../../context/UserContext";
+import React from "react";
+import { useUserContext } from "../../context/UserContext";
 
 function ContactForm() {
-  const context = useUserContext();
-  const { user,  updateEmail, updatePhone } = context;
-  const handleSubmit = (e) => {
-    e.preventDefault();
-  };
+  const { user, updateEmail, updatePhone } = useUserContext();
+
   return (
-    <form onSubmit={handleSubmit}>
+    <div>
       <label>
         email:
         <input
@@ -22,12 +19,10 @@ function ContactForm() {
         <input
           type="text"
           value={user.contact.phone}
-          onChange={(e) =>
-            updatePhone(e.target.value)
-          }
+          onChange={(e) => updatePhone(e.target.value)}
         />
       </label>
-    </form>
+    </div>
   );
 }
 
