@@ -56,6 +56,7 @@ const TestIm = ({ size = 150, onChange,imagePath }) => {
   const handleRemoveImage = () => {
     setSelectedImage(null);
     setPreviewUrl(null);
+    handleClose();
  
   };
   const handleClickOpen = () => {

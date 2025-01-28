@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Button, Typography, Paper, IconButton, Avatar } from "@mui/material";
+import { Box, Button, Typography, Paper, IconButton } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DeleteIcon from "@mui/icons-material/Delete";

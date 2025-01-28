@@ -56,8 +56,10 @@ function UserEdit() {
   };
 
   const editUser = async (id) => {
+    console.log("เข้ารึยางงงงง")
     try {
-      await Axios.put("http://localhost:3001/edit", {
+      console.log("errorก่อน")
+      await Axios.put(`${process.env.REACT_APP_API_URL}/edit`, {
         imagePath: user.imagePath,
         fname: user.fname,
         lname: user.lname,
@@ -65,9 +67,14 @@ function UserEdit() {
         birthday: user.birthday,
         id: id,
       });
+      console.log("errorหลัง")
+     
       navigate("/");
-    } catch (_) {}
+    } catch (error) {
+      console.log(error)
+    }
   };
+ console.log(user.birthday)
 
   useEffect(() => {
     getUser();
@@ -95,6 +102,7 @@ function UserEdit() {
           </Link>
         </Box>
       </Box>
+
 
       <Container maxWidth="90%">
         {/* <Box display={"flex"} flexDirection={"row"} sx={{ width: "100%" }}>
