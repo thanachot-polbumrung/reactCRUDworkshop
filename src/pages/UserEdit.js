@@ -17,15 +17,13 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import TestIm from "../components/UserAdd/TestIm";
-import {  useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import dayjs, { Dayjs } from "dayjs";
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-
-
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 function UserEdit() {
   const { id } = useParams();
@@ -34,37 +32,49 @@ function UserEdit() {
 
   const [open, setOpen] = useState(false);
 
-
-  const [fname, setFname] = useState("");
-  const [lname, setLname] = useState("");
-  const [gender, setGender] = useState("");
-  const [birthday, setBirthday] = useState(null);
-  const [imagePath, setImagePath] = useState("");
-
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const [user, setUser] = useState({
+    fname: "",
+    lname: "",
+    gender: "",
+    birthday: null,
+    imagePath: "",
+  });
 
   const getUser = async () => {
-    const response = await Axios.get(`${apiUrl}/user/${id}`);
-    setFname(response.data.fname);
-    setLname(response.data.lname);
-    setGender(response.data.gender);
-    setBirthday(dayjs(response.data.birthday));
-    setImagePath(response.data.image_path);
-    console.log(new Date(response.data.birthday));
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/user/${id}`
+      );
+      setUser({
+        fname: response.data.fname,
+        lname: response.data.lname,
+        gender: response.data.gender,
+        birthday: dayjs(response.data.birthday),
+        imagePath: response.data.image_path,
+      });
+    } catch (_) {}
   };
 
   const editUser = async (id) => {
-    await Axios.put("http://localhost:3001/edit", {
-      imagePath: imagePath,
-      fname: fname,
-      lname: lname,
-      gender: gender,
-      birthday: birthday,
-      id: id,
-    });
-
-    navigate("/");
+    console.log("เข้ารึยางงงงง")
+    try {
+      console.log("errorก่อน")
+      await Axios.put(`${process.env.REACT_APP_API_URL}/edit`, {
+        imagePath: user.imagePath,
+        fname: user.fname,
+        lname: user.lname,
+        gender: user.gender,
+        birthday: user.birthday,
+        id: id,
+      });
+      console.log("errorหลัง")
+     
+      navigate("/");
+    } catch (error) {
+      console.log(error)
+    }
   };
+ console.log(user.birthday)
 
   useEffect(() => {
     getUser();
@@ -79,28 +89,118 @@ function UserEdit() {
   };
 
   return (
-    <div>
-      <React.Fragment>
-        <CssBaseline />
-        <Box display={"flex"} margin={"10px"}>
-          <Box sx={{ flexGrow: 1 }}>
-            <Typography variant="h6" gutterBottom>
-              Edit
-            </Typography>
-          </Box>
-          <Box>
-            <Link href="add">
-              <Button disabled>ADD</Button>
-            </Link>
-          </Box>
+    <React.Fragment>
+      <Box display={"flex"} margin={"10px"}>
+        <Box sx={{ flexGrow: 1 }}>
+          <Typography variant="h6" gutterBottom>
+            Edit
+          </Typography>
         </Box>
+        <Box>
+          <Link href="add">
+            <Button disabled>ADD</Button>
+          </Link>
+        </Box>
+      </Box>
+
+
+      <Container maxWidth="90%">
+        {/* <Box display={"flex"} flexDirection={"row"} sx={{ width: "100%" }}>
+          <TestIm
+            imagePath={user.imagePath}
+            onChange={(imagePath) =>
+              setUser((prev) => ({ ...prev, imagePath: imagePath }))
+            }
+          />
+          <Box sx={{ width: "60%", margin: "20px" }}>
+            <Grid
+              container
+              justifyContent="flex-end"
+              rowSpacing={1}
+              columnSpacing={1}
+            >
+              <Grid item xs={6}>
+                <Typography variant="h6" gutterBottom>
+                  First name
+                </Typography>
+                <TextField
+                  id="fname"
+                  label="First name"
+                  variant="outlined"
+                  value={user.fname}
+                  required
+                  fullWidth
+                  onChange={(e) =>
+                    setUser((prev) => ({ ...prev, fname: e.target.value }))
+                  }
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <Typography variant="h6" gutterBottom>
+                  Last name
+                </Typography>
+                <TextField
+                  id="lname"
+                  label="Last name"
+                  variant="outlined"
+                  value={user.lname}
+                  required
+                  fullWidth
+                  onChange={(e) =>
+                    setUser((prev) => ({ ...prev, lname: e.target.value }))
+                  }
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <Typography variant="h6" gutterBottom>
+                  Gender
+                </Typography>
+                <Box sx={{ minWidth: 120 }}>
+                  <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">
+                      Gender
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={user.gender}
+                      label="gender"
+                      onChange={(e) =>
+                        setUser((prev) => ({ ...prev, gender: e.target.value }))
+                      }
+                    >
+                      <MenuItem value={"Male"}>Male</MenuItem>
+                      <MenuItem value={"Female"}>Female</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography variant="h6" gutterBottom>
+                  Birthday
+                </Typography>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    onChange={(newValue) =>
+                      setUser((prev) => ({ ...prev, birthday: newValue }))
+                    }
+                    sx={{ width: "100%" }}
+                    value={user.birthday}
+                  />
+                </LocalizationProvider>
+              </Grid>
+            </Grid>
+          </Box>
+        </Box> */}
 
         <Container maxWidth="90%">
           <form>
             <Box display={"flex"} flexDirection={"row"} sx={{ width: "100%" }}>
               <TestIm
-                imagePath={imagePath}
-                onChange={(imagePath) => setImagePath(imagePath)}
+                imagePath={user.imagePath}
+                onChange={(imagePath) =>
+                  setUser((prev) => ({ ...prev, imagePath: imagePath }))
+                }
               />
               <Box sx={{ width: "60%", margin: "20px" }}>
                 <Grid
@@ -115,12 +215,14 @@ function UserEdit() {
                     </Typography>
                     <TextField
                       id="fname"
-                      label={fname}
+                      label="fname"
                       variant="outlined"
-                      value={fname}
+                      value={user.fname}
                       required
                       fullWidth
-                      onChange={(e) => setFname(e.target.value)}
+                      onChange={(e) =>
+                        setUser((prev) => ({ ...prev, fname: e.target.value }))
+                      }
                     />
                   </Grid>
                   <Grid item xs={6}>
@@ -131,10 +233,12 @@ function UserEdit() {
                       id="lname"
                       label="Last name"
                       variant="outlined"
-                      value={lname}
+                      value={user.lname}
                       required
                       fullWidth
-                      onChange={(e) => setLname(e.target.value)}
+                      onChange={(e) =>
+                        setUser((prev) => ({ ...prev, lname: e.target.value }))
+                      }
                     />
                   </Grid>
                   <Grid item xs={6}>
@@ -149,9 +253,14 @@ function UserEdit() {
                         <Select
                           labelId="demo-simple-select-label"
                           id="demo-simple-select"
-                          value={gender}
+                          value={user.gender}
                           label="gender"
-                          onChange={(e) => setGender(e.target.value)}
+                          onChange={(e) =>
+                            setUser((prev) => ({
+                              ...prev,
+                              gender: e.target.value,
+                            }))
+                          }
                         >
                           <MenuItem value={"Male"}>Male</MenuItem>
                           <MenuItem value={"Female"}>Female</MenuItem>
@@ -165,9 +274,11 @@ function UserEdit() {
                     </Typography>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DatePicker
-                        onChange={(newValue) => setBirthday(newValue)}
+                        onChange={(newValue) =>
+                          setUser((prev) => ({ ...prev, birthday: newValue }))
+                        }
                         sx={{ width: "100%" }}
-                        value={birthday}
+                        value={user.birthday}
                       />
                     </LocalizationProvider>
                   </Grid>
@@ -190,22 +301,18 @@ function UserEdit() {
                 variant="contained"
               >
                 {/* <Link href="/"> */}
-                  <Button onClick={handleClickOpen} color="error">cancel</Button>
+                <Button onClick={handleClickOpen} color="error">
+                  cancel
+                </Button>
                 {/* </Link> */}
               </ButtonGroup>
-              <Dialog
-                open={open}
-                onClose={handleClose}
-                
-              >
+              <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>{"คุณต้องการยกเลิกใช่หรือไม่?"}</DialogTitle>
-                <DialogContent>
-                  
-                </DialogContent>
+                <DialogContent></DialogContent>
                 <DialogActions>
                   <Button onClick={handleClose}>Disagree</Button>
                   <Link href="/">
-                  <Button >Agree</Button>
+                    <Button>Agree</Button>
                   </Link>
                 </DialogActions>
               </Dialog>
@@ -226,8 +333,8 @@ function UserEdit() {
           </form>
           <Box sx={{ bgcolor: "#FFF", height: "100vh" }}></Box>
         </Container>
-      </React.Fragment>
-    </div>
+      </Container>
+    </React.Fragment>
   );
 }
 

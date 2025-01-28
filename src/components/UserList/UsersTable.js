@@ -14,51 +14,47 @@ import Axios from "axios";
 import { Avatar } from "@mui/material";
 import dayjs from "dayjs";
 import { Link, useNavigate } from "react-router-dom";
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
 
-import DialogTitle from '@mui/material/DialogTitle';
+import DialogTitle from "@mui/material/DialogTitle";
 
 export default function UsersTable() {
   const [user, setUser] = useState([]);
   const [page, setPage] = useState(1);
   const [open, setOpen] = React.useState(false);
-  const [itemsPerPage,setItemPerPage] = useState(10)
+  const [deleteId, setDeleteId] = useState("");
+  const [itemsPerPage, setItemPerPage] = useState(10);
   const navigate = useNavigate();
 
   const apiUrl = process.env.REACT_APP_API_URL;
 
-  
   const startIndex = (page - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentUsers = user.slice(startIndex, endIndex);
-  const pageCount =Math.ceil(user.length / itemsPerPage)
-  console.log(user.length)
-  
+  const pageCount = Math.ceil(user.length / itemsPerPage);
   const getUser = async () => {
-
     const response = await Axios.get(`${apiUrl}/users`);
     setUser(response.data);
   };
 
   const deleteUser = async (id) => {
-    const response = await Axios.delete(`${apiUrl}/delete/${id}`);
+    await Axios.delete(`${apiUrl}/delete/${id}`);
     setUser(
       user.filter((val) => {
-        return val.id != id;
+        return val.id !== id;
       })
     );
-
+    console.log("deleteUser Id :" + id);
   };
-
- 
 
   useEffect(() => {
     getUser();
   }, []);
 
-  const handleClickOpen = () => {
+  const handleClickOpen = (id) => {
+    setDeleteId(id)
     setOpen(true);
   };
 
@@ -81,14 +77,12 @@ export default function UsersTable() {
         </TableHead>
         <TableBody>
           {currentUsers.map((row) => {
-            const specificDate = dayjs(row.birthday)
-            const dateSet =  specificDate.format('D MMM YYYY')
-            
-            return (
+            const specificDate = dayjs(row.birthday);
+            const dateSet = specificDate.format("D MMM YYYY");
 
+            return (
               <TableRow
                 key={row.name}
-                
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell align="center">
@@ -115,7 +109,7 @@ export default function UsersTable() {
                       variant="contained"
                     >
                       <Link to={`edit/${row.id}`}>
-                      <Button  color="warning">Edit</Button>
+                        <Button color="warning">Edit</Button>
                       </Link>
                     </ButtonGroup>
                     <ButtonGroup
@@ -125,7 +119,7 @@ export default function UsersTable() {
                     >
                       <Button
                         color="error"
-                        onClick={handleClickOpen}
+                        onClick={()=>handleClickOpen(row.id)}
                         // onClick={() => {
                         //   deleteUser(row.id);
                         // }}
@@ -133,32 +127,36 @@ export default function UsersTable() {
                         Delete
                       </Button>
                     </ButtonGroup>
-                    <Dialog
-                open={open}
-                onClose={handleClose}
-                
-              >
-                <DialogTitle>{"คุณต้องการยกเลิกใช่หรือไม่?"}</DialogTitle>
-                <DialogContent>
-                  
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={handleClose}>Disagree</Button>
-                  <Link href="/">
-                  <Button  onClick={() => {
-                          deleteUser(row.id,navigate(0));
-                        }} >Agree</Button>
-                  </Link>
-                </DialogActions>
-              </Dialog>
                   </Box>
                 </TableCell>
               </TableRow>
             );
           })}
+          <Dialog open={open} onClose={handleClose}>
+            <DialogTitle>{"คุณต้องการลบใช่หรือไม่?" + deleteId}</DialogTitle>
+            <DialogContent></DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose}>Disagree</Button>
+              
+                <Button
+                  onClick={() => {
+                    deleteUser(deleteId);
+                    handleClose();
+                  }}
+                >
+                  Agree
+                </Button>
+              
+            </DialogActions>
+          </Dialog>
         </TableBody>
       </Table>
-      <TapPage onChange={(newPage)=>setPage(newPage)} pageCount={pageCount} itemsPerPage={itemsPerPage} onChangePage={(value)=>setItemPerPage(value)} />
+      <TapPage
+        onChange={(newPage) => setPage(newPage)}
+        pageCount={pageCount}
+        itemsPerPage={itemsPerPage}
+        onChangePage={(value) => setItemPerPage(value)}
+      />
     </TableContainer>
   );
 }

@@ -27,7 +27,7 @@ function UserAdd() {
   const [imagePath, setImagePath] = useState("");
 
   const addUser = async () => {
-    const response = await Axios.post("http://localhost:3001/create", {
+    await Axios.post("http://localhost:3001/create", {
       imagePath: imagePath,
       fname: fname,
       lname: lname,
@@ -45,6 +45,7 @@ function UserAdd() {
       },
     ]);
   };
+  console.log(...user)
 
   return (
     <div>
